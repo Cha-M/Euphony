@@ -17,9 +17,6 @@ from tkinter.messagebox import showwarning
 from tkinter.messagebox import showinfo
 from statistics import mean
 
-
-#load text from box, for cipher
-
 class phonemeLists:
     cfrom=[]
     vfrom=[]

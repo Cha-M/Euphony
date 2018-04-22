@@ -64,8 +64,8 @@ class phonemeLists:
     ciphersourcewords=[]
     wordsXPatterns=[]
 
-##class sWindow:
-##    boop=ttk.Treeview()
+##class euWindow:
+##    euTreeview=ttk.Treeview()
 
 class otherVariables:
     filetitle = 'Euphony'
@@ -109,6 +109,14 @@ class otherVariables:
     wordVecVec=[]
     vecWord=[]
     de=0
+
+euTreeview = None
+scrollbar = None
+tableFrame = None
+lesserFrame = None
+spitButton = None
+reloadButton = None
+
 
 #/* Here's me converting the c++ stuff
 
@@ -669,40 +677,28 @@ def csvFiler():
             if len(phonemeLists.finalLegibleDictionary['Pattern'])<1:
                 phonemeLists.finalLegibleDictionary=OrderedDict([])
                 messagebox.showwarning("No patterns found", "The Pattern section of this CSV is empty.")
-                global boop
-                global scrollbar
-                global tableFrame
-                global lesserFrame
-                boop.destroy()
+                euTreeview.destroy()
                 scrollbar.destroy()
                 tableFrame.destroy()
                 lesserFrame.destroy()
                 pathBoxtext.set("")
-                global spitButton
-                global reloadButton
                 reloadButton.config(state=DISABLED)
                 spitButton.config(state=DISABLED)
                 otherVariables.savedfilePath=""
-                sWindow.title('Euphony')
+                euWindow.title('Euphony')
                 #dialogue
                 return
     except:
         messagebox.showwarning("Could not load", "Could not load this CSV.")
-        global boop
-        global scrollbar
-        global tableFrame
-        global lesserFrame
-        boop.destroy()
+        euTreeview.destroy()
         scrollbar.destroy()
         tableFrame.destroy()
         lesserFrame.destroy()
         pathBoxtext.set("")
-        global spitButton
-        global reloadButton
         reloadButton.config(state=DISABLED)
         spitButton.config(state=DISABLED)
         otherVariables.savedfilePath=""
-        sWindow.title('Euphony')
+        euWindow.title('Euphony')
         return
     otherVariables.savedfilePath=filePath
     if 'Transform from' and 'Transform to' in phonemeLists.finalLegibleDictionary.keys():
@@ -718,8 +714,6 @@ def csvFiler():
         otherVariables.fileInvisibles=phonemeLists.finalLegibleDictionary['Invisibles']
     reorderKeys()
     buildTable()
-    global spitButton
-    global reloadButton
     spitButton.config(state=NORMAL)
     reloadButton.config(state=NORMAL)
     return
@@ -766,17 +760,11 @@ def textfiler():
         stringPut="Cannot open this file:\n" + filePath + "\nIs this a working UTF-8 text file?"
         messagebox.showwarning("Cannot open file", stringPut)
         spitButton.config(state=DISABLED)
-        global boop
-        global scrollbar
-        global tableFrame
-        global lesserFrame
-        boop.destroy()
+        euTreeview.destroy()
         scrollbar.destroy()
         tableFrame.destroy()
         lesserFrame.destroy()
         pathBoxtext.set("")
-        global spitButton
-        global reloadButton
         reloadButton.config(state=DISABLED)
         spitButton.config(state=DISABLED)
         otherVariables.savedfilePath=""
@@ -790,18 +778,15 @@ def textfiler():
 
     setVowelConsonant()
     
-        #these also need to be deleted from consonants?<----------------------------------------------------------- SEE HERE
+
     if aPostCon.get() is 1:
         otherVariables.booleanConsonants[39] = 1
-#        otherVariables.filerConsonants.append("'")
+
     elif aPostCon.get() is 0:
         d=d.replace("’","")
         d=d.replace("'","")
         otherVariables.booleanConsonants[39] = 0
-#        ["’", "'"]
-#allConsonants not working right yet
-        #this is joining together every apostrophe'd word
-        #so odd behaviour after.  need different settings for cipher reader to get identical words.  These don't need to worry about apostrophes polluting the language data (as the .words won't be used for that _phonological stuff) but length is an issue.
+        
     for bo in d:      
         if bo in otherVariables.allConsonants and bo not in otherVariables.filerConsonants and bo not in otherVariables.filerVowels:
             otherVariables.filerConsonants.append(bo)
@@ -814,29 +799,15 @@ def textfiler():
             pass
         else:
             d=d.replace(n, " ")
-        #so atm it's just replacing anything outside those two with a space
-        #need a new reader fun for genning texttocipher and .words  --> individual.
                 
     phonemeLists.words=d.split()
     iterWord()
     analyst()
     fileResultReader()
-##    print('replacer gen?')
-##    if 'Replace from' and 'Replace to' in phonemeLists.finalLegibleDictionary:
-##        phonemeLists.replacer=dict(zip(phonemeLists.finalLegibleDictionary['Replace from'], phonemeLists.finalLegibleDictionary['Replace to']))
-##    else:
-##        phonemeLists.replacer={}
-##    print('\n')
-##    print(phonemeLists.finalLegibleDictionary)
-##    print(n, otherVariables.classWord)
-##    print("Loaded Text")
-    global spitButton
-    global reloadButton
     spitButton.config(state=NORMAL)
     reloadButton.config(state=NORMAL)
     return
-#
-#*/
+
 
 def boxFiler():
     phonemeLists.finalLegibleDictionary=OrderedDict()
@@ -850,7 +821,7 @@ def readerFiler():
     otherVariables.filerVowels = []
     otherVariables.useConsonants = otherVariables.allConsonants
     otherVariables.useVowels = otherVariables.allVowels
-    ###booool
+
     setVowelConsonant()
     if aPostCon.get() is 1:
         otherVariables.booleanConsonants[39] = 1
@@ -1141,40 +1112,40 @@ def fromTextSaver():
 ###This happens when you click
 def boxxFile():
     original=pathBoxtext.get()
-#   sWindow.config(cursor="wait")
+#   euWindow.config(cursor="wait")
     menuResult = askopenfilename(defaultextension = '.txt', filetypes = [('Comma Separated Values', '.csv'), ('UTF-8 Text File to Iterate Over', '.txt')])
     pathBoxtext.set(menuResult)
     if menuResult.endswith('.txt'):
         phonemeLists.finalLegibleDictionary=OrderedDict()
         otherVariables.filetitle = menuResult+' - Euphony'
-        sWindow.title(otherVariables.filetitle)
+        euWindow.title(otherVariables.filetitle)
         textfiler()
     elif menuResult.endswith('.csv'):
         phonemeLists.finalLegibleDictionary=OrderedDict()
         otherVariables.filetitle = menuResult+' - Euphony'
-        sWindow.title(otherVariables.filetitle)
+        euWindow.title(otherVariables.filetitle)
         csvFiler()
     else:
 #        otherVariables.filetitle = original+' - Euphony'
         pathBoxtext.set(original)
-#        sWindow.title(otherVariables.filetitle)
-        sWindow.title('Euphony')
+#        euWindow.title(otherVariables.filetitle)
+        euWindow.title('Euphony')
     return
 
 def reloadFile():
-#   sWindow.config(cursor="wait")
+#   euWindow.config(cursor="wait")
     menuResult = otherVariables.savedfilePath
     phonemeLists.finalLegibleDictionary=OrderedDict()
     if menuResult.endswith('.txt'):
         otherVariables.filetitle = menuResult+' - Euphony'
-        sWindow.title(otherVariables.filetitle)
+        euWindow.title(otherVariables.filetitle)
         textfiler()
     elif menuResult.endswith('.csv'):
         otherVariables.filetitle = menuResult+' - Euphony'
-        sWindow.title(otherVariables.filetitle)
+        euWindow.title(otherVariables.filetitle)
         csvFiler()
     else:
-        sWindow.title('Euphony')
+        euWindow.title('Euphony')
     return
 
 ##def boxxFile_preset():
@@ -1182,14 +1153,14 @@ def reloadFile():
 ##    menuResult=pathBoxtext.get()
 ##    if menuResult.endswith('.txt'):
 ##        otherVariables.filetitle = menuResult+' - Euphony'
-##        sWindow.title(otherVariables.filetitle)
+##        euWindow.title(otherVariables.filetitle)
 ##        textfiler()
 ##    elif menuResult.endswith('.csv'):
 ##        otherVariables.filetitle = menuResult+' - Euphony'
-##        sWindow.title(otherVariables.filetitle)
+##        euWindow.title(otherVariables.filetitle)
 ##        csvFiler()
 ##    else:
-##        sWindow.title('Euphony')
+##        euWindow.title('Euphony')
 ##    return
 
 def boxxFileSetupForC():
@@ -1318,14 +1289,14 @@ def preCipher():
     menuResult=pathBoxtext.get()
     if menuResult.endswith('.txt'):
         otherVariables.filetitle = menuResult+' - Euphony'
-        sWindow.title(otherVariables.filetitle)
+        euWindow.title(otherVariables.filetitle)
         textfiler()
     elif menuResult.endswith('.csv'):
         otherVariables.filetitle = menuResult+' - Euphony'
-        sWindow.title(otherVariables.filetitle)
+        euWindow.title(otherVariables.filetitle)
         csvFiler()
     else:
-        sWindow.title('Euphony')
+        euWindow.title('Euphony')
     filePath = pathBoxtext_ciphersource.get()
     if len(filePath) < 4:
         return
@@ -1480,7 +1451,7 @@ def cipherSetup():
 ######??>:I worx
     otherVariables.cipherwinopen=0
     pathBoxtext.set("")
-    sWindow.title('Euphony')
+    euWindow.title('Euphony')
     cipherWindow.destroy()
     return
         
@@ -1489,14 +1460,14 @@ def boxEnter(a):
     menuResult = pathBoxtext.get()
     if menuResult.endswith('.txt'):
         otherVariables.filetitle = menuResult+' - Euphony'
-        sWindow.title(otherVariables.filetitle)
+        euWindow.title(otherVariables.filetitle)
         textfiler()
     elif menuResult.endswith('.csv'):
         otherVariables.filetitle = menuResult+' - Euphony'
-        sWindow.title(otherVariables.filetitle)
+        euWindow.title(otherVariables.filetitle)
         csvFiler()
     else:
-        sWindow.title('Euphony')
+        euWindow.title('Euphony')
     return
 
 def editcsv():
@@ -1720,7 +1691,7 @@ def analyst2():
 
 def warper():
     analyst2()
-    thing()
+    warpChange()
     n = 0
     for pair in phonemeLists.wordsXPatterns:
         print("go pair")
@@ -1750,39 +1721,38 @@ def warper():
 
                 wWord += choice(patternDictEntry)
             else:
-                print(h, " found")
+                #print(h, " found")
                 wWord += h
 
             nn += 1
             q = 0
-        print(wWord)
+        #print(wWord)
         #printBox.insert(INSERT, '['+wordshape+' : '+caseWord+']')
         printBox.insert(INSERT, wWord + ' ')
 
-def thing():
+def warpChange():
     #this changes the patterns of the words to warp to accepted ones
-    legalpatterns = phonemeLists.finalLegibleDictionary["Pattern"]
-    shuffle(legalpatterns)
-    #phonemeLists.wordsXPatterns = [(['Ch', 'a', 'rl', 'o', 'tt', 'e'], '<dikiKo>'), ( ['M', 'e', 'gr', 'o', 'ff'], '<tikiB>'), (['Ch','a','r'], '<dip>')]
+    legalPatterns = phonemeLists.finalLegibleDictionary["Pattern"]
+    shuffle(legalPatterns)
+    #phonemeLists.wordsXPatterns = [(['Ch', 'a', 'rl', 'o', 'tt', 'e'], '<dikiKo>'), (['Ch','a','r'], '<dip>')]
     n=1
     tuplematches = []
     for x in phonemeLists.wordsXPatterns:
-        #tuplematches = []
         thispat = x[1]
-        if thispat in legalpatterns:
-            print("y")
+        if thispat in legalPatterns:
+            #print("y")
             tuplematches.append(x)
         else:
-            print("n")
+            #print("n")
             size = len(thispat) - 1
             #MyString[a:b]
             alike = ""
             while size > 0 and otherVariables.de is 0:
                 otherVariables.de = 0
-                for g in legalpatterns:
+                for g in legalPatterns:
                     if thispat[0:size] in g and otherVariables.de is 0:
                         alike = g
-                        print(thispat[0:size], alike)
+                        #print(thispat[0:size], alike)
                         a = len(alike)
                         d = len(thispat)
                         if a>d:
@@ -1804,7 +1774,7 @@ def thing():
 #frame = Frame(root, width=100, height=100)
 
 
-sWindow = Tk()
+euWindow = Tk()
 ignoreWindow=Toplevel()
 ignoreWindow.withdraw()
 invisibleWindow=Toplevel()
@@ -1842,30 +1812,30 @@ shorterLimit = IntVar()
 longerLimit.set(1)
 shorterLimit.set(1)
 
-boop=ttk.Treeview()
+euTreeview=ttk.Treeview()
 
 def buildTable():
-    global boop
+    global euTreeview
     global scrollbar
     global tableFrame
     global lesserFrame
     if otherVariables.tableBuilt is 1:
-        boop.destroy()
+        euTreeview.destroy()
         scrollbar.destroy()
         tableFrame.destroy()
         lesserFrame.destroy()
     else:
         pass
-    keysTuple=tuple(phonemeLists.finalLegibleDictionary.keys())
-    tableFrame=Frame(mainTopFrame)
-    lesserFrame=Frame(tableFrame)
+    keysTuple = tuple(phonemeLists.finalLegibleDictionary.keys())
+    tableFrame = Frame(mainTopFrame)
+    lesserFrame = Frame(tableFrame)
     scrollbar = Scrollbar(lesserFrame)
-    boop = ttk.Treeview(lesserFrame, height = 10, selectmode='browse', columns=keysTuple, displaycolumns=keysTuple, yscrollcommand=scrollbar.set)
+    euTreeview = ttk.Treeview(lesserFrame, height = 10, selectmode='browse', columns=keysTuple, displaycolumns=keysTuple, yscrollcommand=scrollbar.set)
 
     for nom in keysTuple:
-#        boop.heading(nom, text=nom, command=listclicker)
-        boop.heading(nom, text=nom)
-        boop.column(nom, width=Font().measure(nom), stretch=NO)
+#        euTreeview.heading(nom, text=nom, command=listclicker)
+        euTreeview.heading(nom, text=nom)
+        euTreeview.column(nom, width=Font().measure(nom), stretch=NO)
         
     for lengthTester in keysTuple:
         if len(phonemeLists.finalLegibleDictionary[lengthTester])>otherVariables.setTester:
@@ -1880,7 +1850,7 @@ def buildTable():
                 otherVariables.roww.append(otherVariables.placeholder[t])
             else:
                 otherVariables.roww.append('')
-        boop.insert('', 'end', values=otherVariables.roww)
+        euTreeview.insert('', 'end', values=otherVariables.roww)
     #    print(otherVariables.roww)
         otherVariables.roww=[]
 
@@ -1892,19 +1862,19 @@ def buildTable():
             if Font().measure(eac2)>Font().measure(z):
                 z=eac2
             if Font().measure(eac2)>Font().measure('AAAAAAAAAAAAAAA'):
-                z='AAAAAAAAAAAAAAA'
-        boop.column(thekey, width=Font().measure(z)+10, stretch=NO, minwidth=1)
+                z = 'AAAAAAAAAAAAAAA'
+        euTreeview.column(thekey, width=Font().measure(z)+10, stretch=NO, minwidth=1)
     #banned needs wider than 0. nd set to title width if that's longest
-    #    boop.column(thekey, width=z)
+    #    euTreeview.column(thekey, width=z)
 #        print(thekey, 'Should now have a width of', z)
-    boop.column('#0', width=0, stretch=NO, minwidth=0)
-    boop.grid(row = 0, column = 0)
+    euTreeview.column('#0', width=0, stretch=NO, minwidth=0)
+    euTreeview.grid(row = 0, column = 0)
     scrollbar.grid(row = 0, column = 1, sticky=N+S)
-    scrollbar.config(command=boop.yview)
+    scrollbar.config(command=euTreeview.yview)
     tableFrame.grid(row = 1, column = 0, columnspan = 3, pady = 6, sticky=W+E)
 #    lesserFrame.place(relx=.5, rely=.5, anchor="c")
     lesserFrame.pack(expand=1)
-#    boop.bind('<Button-1>',listclicker)
+#    euTreeview.bind('<Button-1>',listclicker)
     otherVariables.tableBuilt = 1
 #    print('otherVariables.tableBuilt=',otherVariables.tableBuilt)
     return
@@ -1940,7 +1910,7 @@ def rcpaste():
 ##    pattern = re.compile("|".join([re.escape(k) for k in phonemeLists.replacer.keys()]), re.M)
 ##    otherVariables.classWord = pattern.sub(lambda x: phonemeLists.replacer[x.group(0)], otherVariables.classWord)
 ##fix this!###
-def rctransform():
+def rcTransform():
     global printBox
     printBox.focus_set()
     otherVariables.transformText=printBox.selection_get()
@@ -1950,7 +1920,7 @@ def rctransform():
     printBox.insert(INSERT, otherVariables.transformText)
     return
 
-def rctranslate():
+def rcTranslate():
     global printBox
     printBox.focus_set()
     otherVariables.translateText=printBox.selection_get()
@@ -2023,7 +1993,7 @@ def openupCipher():
 #
     cipherframe.grid(row = 0, column = 0)
 #
-    big=str(sWindow.geometry())
+    big=str(euWindow.geometry())
     bigw=big.replace('+','x')
     t4Numbers=bigw.split(sep='x')
 #    print('geometry ripped', t4Numbers)
@@ -2061,11 +2031,11 @@ def showHelp2():
     messagebox.showinfo("Some help", helpWriteup.helpwrote)
     return
 
-sWindow.geometry('+628+169')
-sWindow.title(otherVariables.filetitle)
-sWindow.resizable(0, 0)
+euWindow.geometry('+628+169')
+euWindow.title(otherVariables.filetitle)
+euWindow.resizable(0, 0)
 
-menuBar = Menu(sWindow)
+menuBar = Menu(euWindow)
 
 def fileMenuUpdate():
     if len(phonemeLists.finalLegibleDictionary)>0:
@@ -2094,7 +2064,7 @@ fileMenu.add_command(label = 'Save Loaded Data as CSV', command = fromTextSaver)
 fileMenu.add_command(label = 'Load Text From Box', command = boxFiler)
 fileMenu.add_command(label = 'Cipher Text', command = setCipherWindow)
 fileMenu.add_command(label = 'Warp', command = warper)
-fileMenu.add_command(label = 'Exit', command = sWindow.destroy)
+fileMenu.add_command(label = 'Exit', command = euWindow.destroy)
 menuBar.add_cascade(label = 'File', menu = fileMenu)
 
 optionsMenu = Menu(menuBar, tearoff = 0)
@@ -2134,7 +2104,7 @@ def openup():
     invisible_button.grid(row = 0, column = 2, sticky = W)
     invisibleWindow.protocol("WM_DELETE_WINDOW", invisibleSetback)
 #
-    big=str(sWindow.geometry())
+    big=str(euWindow.geometry())
     bigw=big.replace('+','x')
     t4Numbers=bigw.split(sep='x')
 #    print('geometry ripped', t4Numbers)
@@ -2182,7 +2152,7 @@ def openupig():
     ignoreBoxButton.grid(row = 0, column = 2, sticky = W)
     ignoreWindow.protocol("WM_DELETE_WINDOW", igsetback)
 #
-    big=str(sWindow.geometry())
+    big=str(euWindow.geometry())
     bigw=big.replace('+','x')
     t4Numbers=bigw.split(sep='x')
 #    print('geometry ripped', t4Numbers)
@@ -2250,13 +2220,13 @@ readerMenu.add_command(label = 'Ignore words...', command = setIgnoreWindow)
 menuBar.add_cascade(label = 'Options', menu = optionsMenu)
 
 aboutmenu = Menu(menuBar, tearoff = 0)
-aboutmenu.add_command(label = "Hi there!  Made by nekology (Steam name) 2015")
+aboutmenu.add_command(label = "By Cha-M, 2018")
 aboutmenu.add_command(label = "Help", command=showHelp2)
 menuBar.add_cascade(label = 'Help', menu = aboutmenu)
 
-sWindow.bind("<F1>", showHelp)
+euWindow.bind("<F1>", showHelp)
 
-sWindow.config(menu = menuBar)
+euWindow.config(menu = menuBar)
 
 def rcupdate():
     if len(phonemeLists.replacer)>0:
@@ -2269,17 +2239,17 @@ def rcupdate():
         boxRCMenu.entryconfig(6, state=DISABLED)
     return
 
-boxRCMenu = Menu(sWindow, tearoff=0, postcommand=rcupdate)
+boxRCMenu = Menu(euWindow, tearoff=0, postcommand=rcupdate)
 boxRCMenu.add_command(label="Cut", command=rccut)
 boxRCMenu.add_command(label="Copy", command=rccopy)
 boxRCMenu.add_command(label="Paste", command=rcpaste)
 boxRCMenu.add_command(label="Delete", command=rcdelete)
 boxRCMenu.add_command(label="Select All", command=rcsall)
-boxRCMenu.add_command(label="Transform selection", command=rctransform, state=DISABLED)
-boxRCMenu.add_command(label="Translate selection", command=rctranslate, state=DISABLED)
+boxRCMenu.add_command(label="Transform selection", command=rcTransform, state=DISABLED)
+boxRCMenu.add_command(label="Translate selection", command=rcTranslate, state=DISABLED)
 boxRCMenu.add_command(label="Clear All", command=rcclearall)
 
-mainTopFrame = Frame(sWindow, pady = 2)
+mainTopFrame = Frame(euWindow, pady = 2)
 pathFrame = Frame(mainTopFrame)
 numBoxLabel = Label(mainTopFrame, text ='Words to generate:', padx = 2)
 
@@ -2318,6 +2288,4 @@ printBox.grid(row = 13, columnspan = 4, sticky = W+E)
 spitButton.grid(row = 9, column = 0, columnspan = 4, pady = 18)
 mainTopFrame.grid(row = 0, columnspan = 4)
 
-sWindow.mainloop()
-
-
+euWindow.mainloop()

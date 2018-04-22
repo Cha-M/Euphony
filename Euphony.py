@@ -174,45 +174,21 @@ def oneAdd(_phon):
     scan.patternFrom = scan.patternFrom + _phon
     advance(1)
 
-#def inCheckConsonant (_wordChar):
-#
-#    if _wordChar in otherVariables.filerConsonants:
-#        return True
-#    return False
 def inCheckConsonant (_wordChar):
     if otherVariables.booleanConsonants[ord(_wordChar)] is 1:
         return True
     return False
-#    for eachcon in otherVariables.filerConsonants:
-#        if eachcon == _wordChar:
-#            return True
-#    return False
 
-
-#def inCheckVowel (_wordChar):
-#
-#    if _wordChar in otherVariables.filerVowels:
-#        return True
-#    return False
 def inCheckVowel (_wordChar):
 
     if otherVariables.booleanVowels[ord(_wordChar)] is 1:
         return True
     return False
-#    for eachvow in otherVariables.filerVowels:
-#        if eachcon == _wordChar:
-#            return True
-#    return False
-
-#Added stuff */
 
 def spitReplace():
     pattern = re.compile("|".join([re.escape(k) for k in phonemeLists.replacer.keys()]), re.M)
     otherVariables.classWord = pattern.sub(lambda x: phonemeLists.replacer[x.group(0)], otherVariables.classWord)
     
-####
-
-
 def reorderKeys():
     remake = {}
     for each in phonemeLists.finalLegibleDictionary:

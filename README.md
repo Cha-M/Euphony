@@ -1,7 +1,7 @@
 # Euphony
 Python/tkinter GUI application to generate random words using customised rules.
 
-Words follow a random pattern
+Words follow a randomly chosen pattern concatenating randomly chosen strings each from a list keyed to the character in the pattern.
 
 Rules can be generated from the text in the text box or a utf-8 .txt file, or created by editing a CSV file in the same format.
 Included are some examples.
